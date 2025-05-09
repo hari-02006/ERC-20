@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERC-20 Token Info</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-pzjw8f+ua7Kw1TIq0ckp0sWyKqMiTH6mTjyqZm8P0g5J5g5VbGqmtf9+g6LQz7Dp" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f7f7f7;  /* Light grey background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .card {
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #28a745;  /* Green header */
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            border-radius: 0 0 10px 10px;
+            padding: 30px;
+            color: #333;
+        }
+
+        .btn {
+            background-color: #28a745;
+            color: white;
+            width: 100%;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            border-radius: 15px;
+            padding: 20px 15px;
+            font-size: 18px;
+            border: 2px solid #28a745;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #218838;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .form-control::placeholder {
+            font-style: italic;
+            color: #666;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .interactive-section {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 20px;
+            color: #28a745;
+            text-align: center;
+        }
+
+        .info-box {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* Box shadow for the form */
+        .interactive-section {
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="header-title">ERC-20 Token Information</h1>
+
+    <!-- Interactive Section for Entering Token Address -->
+    <div class="interactive-section">
+        <div class="card">
+            <div class="card-header">
+                Enter Token Contract Address
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="address" style="font-size: 1.2rem;">ERC-20 Token Contract Address:</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="e.g., 0x...abc123" required>
+                    </div>
+                    <button type="submit" class="btn">Get Token Info</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display Token Information after Submission -->
+    {% if token_info %}
+        <div class="card mt-4">
+            <div class="card-header">
+                Token Information
+            </div>
+            <div class="card-body">
+                <div class="section-title">Token Details</div>
+                <div class="info-box">
+                    <p><span class="info-title">Name:</span> {{ token_info.name }}</p>
+                    <p><span class="info-title">Symbol:</span> {{ token_info.symbol }}</p>
+                    <p><span class="info-title">Decimals:</span> {{ token_info.decimals }}</p>
+                    <p><span class="info-title">Total Supply:</span> {{ token_info.total_supply | round(2) }}</p>
+                </div>
+
+                <div class="section-title">Extended Market Data</div>
+                <div class="info-box">
+                    <p><span class="info-title">Current Price (USD):</span> ${{ token_info.market_price | round(2) }}</p>
+                    <p><span class="info-title">Market Cap (USD):</span> ${{ token_info.market_cap | round(2) }}</p>
+                    <p><span class="info-title">24h Trading Volume (USD):</span> ${{ token_info.volume_24h | round(2) }}</p>
+                    <p><span class="info-title">Price Change (24h):</span> {{ token_info.price_change_24h }}%</p>
+                    <p><span class="info-title">Rank:</span> #{{ token_info.rank }}</p>
+                    <p><span class="info-title">All-Time High (USD):</span> ${{ token_info.ath | round(2) }}</p>
+                    <p><span class="info-title">All-Time Low (USD):</span> ${{ token_info.atl | round(2) }}</p>
+                    <p><span class="info-title">Circulating Supply:</span> {{ token_info.circulating_supply | round(2) }}</p>
+                    <p><span class="info-title">Total Supply:</span> {{ token_info.cg_total_supply | round(2) }}</p>
+                </div>
+
+                <div class="section-title">Other Information</div>
+                <div class="info-box">
+                    <p><span class="info-title">Token Creation Date:</span> {{ token_info.creation_date }}</p>
+                    <p><span class="info-title">Transfer Count:</span> {{ token_info.transfer_count }}</p>
+                    <p><span class="info-title">Current Gas Price:</span> {{ token_info.gas_price }} Gwei</p>
+                </div>
+            </div>
+        </div>
+    {% elif token_info is not none %}
+        <div class="alert alert-danger">Invalid Ethereum address. Please try again with a valid address.</div>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyIfJ+ua7FwWmUUzvI8pNTwC+M4gJ+Y9mN7+v8nF" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js" integrity="sha384-rbsA0HD4mt5y6gD3oD9S0d7Bo3xQ3UP6dAzpoVqzHjLzvH5gm2ZZ0TfwS0MwFfb7" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0ckp0sWyKqMiTH6mTjyqZm8P0g5J5g5VbGqmtf9+g6LQz7Dp" crossorigin="anonymous"></script>
+
+</body>
+</html>
