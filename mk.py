@@ -23,19 +23,21 @@ def get_extended_market_data(contract_address):
     response = requests.get(url)
     data = response.json()
 
-    if 'error' not in data:
+    if 'market_data' in data:
         return {
-            'market_price': data['market_data']['current_price']['usd'],
-            'market_cap': data['market_data']['market_cap']['usd'],
-            'volume_24h': data['market_data']['total_volume']['usd'],
-            'price_change_24h': data['market_data']['price_change_percentage_24h'],
-            'rank': data['market_cap_rank'],
-            'ath': data['market_data']['ath']['usd'],
-            'atl': data['market_data']['atl']['usd'],
-            'circulating_supply': data['market_data']['circulating_supply'],
-            'total_supply': data['market_data']['total_supply'],
+            'market_price': data['market_data']['current_price'].get('usd'),
+            'market_cap': data['market_data']['market_cap'].get('usd'),
+            'volume_24h': data['market_data']['total_volume'].get('usd'),
+            'price_change_24h': data['market_data'].get('price_change_percentage_24h'),
+            'rank': data.get('market_cap_rank'),
+            'ath': data['market_data']['ath'].get('usd'),
+            'atl': data['market_data']['atl'].get('usd'),
+            'circulating_supply': data['market_data'].get('circulating_supply'),
+            'total_supply': data['market_data'].get('total_supply'),
         }
-    return {}
+    else:
+        return {}
+
 
 # Function to fetch token information
 def get_token_info(contract_address):
